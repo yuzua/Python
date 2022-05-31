@@ -20,11 +20,22 @@
 ### Djangoの基礎
 ***Djangoプロジェクトの構築***
 - コマンド一覧
-    - $pip install Django
-        - ※最新版にアップデートする場合は $pip install -U django
-    - $django-admin startproject <プロジェクト名>
-        - ※プロジェクトが2重にならないようにする場合は $django-admin startproject <プロジェクト名> .
-    - $python manage.py startapp <アプリケーション名>
+    - 開発開始関係
+        - $pip install Django
+            - ※最新版にアップデートする場合は $pip install -U django
+        - $django-admin startproject <プロジェクト名>
+            - ※プロジェクトが2重にならないようにする場合は $django-admin startproject <プロジェクト名> .
+        - $python manage.py startapp <アプリケーション名>
+    - その他
+        - $python manage.py runserver
+        - $python manage.py makemigrations
+        - $python manage.py migrate
+        - $python mamage.py showmigrations <アプリケーション名>
+            - マイグレーション状態の確認
+        - $python manage.py migrate <アプリケーション名> 0001_initial
+            - 0001_initial適用直後までマイグレーションのロールバック実行
+        - $python manage.py test
+        - $python manage.py shell
 - フォルダ構成一覧
     - project(プロジェクト全体をまとめたディレクトリ)
         - application(アプリケーション関連ファイルをまとめたディレクトリ)
@@ -44,6 +55,7 @@
             - settings.py(プロジェクト設定ファイル)
             - urls.py(プロジェクト用ルーティング定義ファイル)
             - wsgi.py(デプロイ用ファイル)
+            - asgi.py(WSGIの精神的後継である 非同期Webアプリケーションデプロイ用)
         - manage.py(コマンド実行用ファイル)
 ***ルーティング***
 - URLをパターンマッチングして処理経路を制御する役割
@@ -113,6 +125,12 @@
     - FloatField
     - DataField
     - DateTimeField
+- モデルオブジェクトを使ってのデータベース操作
+    - .object.get()：1行取得
+    - .object.all()：全レコード取得するQuerySetオブジェクトの作成
+    - .object.fillter()：条件指定
+    - 参照(公式)：https://docs.djangoproject.com/ja/4.0/topics/db/queries/
+    - 参照：https://qiita.com/Bashi50/items/9e1d62c4159f065b662b
 
 [memo]
 *** 順参照と逆参照 ***
