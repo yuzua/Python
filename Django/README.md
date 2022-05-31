@@ -132,6 +132,34 @@
     - 参照(公式)：https://docs.djangoproject.com/ja/4.0/topics/db/queries/
     - 参照：https://qiita.com/Bashi50/items/9e1d62c4159f065b662b
 
+### Djangoの中級
+***言語とタイムゾーンを日本仕様に変更する***
+- settings.pyに以下を記述
+    - LANGUAGE_CODE = 'ja'
+    - TIME_ZONE = 'Asia/Tokyo'
+***データベースの変更(PostgreSQL)***
+- settings.pyのDATABASESを以下に変更
+    - 'ENGINE' = 'django.db.backends.postgresql_psycoge2'
+    - 'PORT' = '5432'
+***ロギングの設定(後で)***
+- 参照：https://docs.djangoproject.com/ja/4.0/topics/logging/
+- 参照：https://kamatimaru.hatenablog.com/entry/2020/12/14/020610
+***静的ファイルの置き場所設定***
+- settings.pyに以下を記述
+    - STATICFILES_DIRS = ( os.path.join(BASE_DIR, 'static') )
+    - $python manage.py collectstatic
+***フォーム動作時の処理(後で)***
+***メール送信処理(後で)***
+- メールの送付先をコンソールに設定する場合、settings.py(settings_dev)に以下を記述
+    - EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+***プロジェクト設定ファイル(settings.py)の分割***
+- 本番環境用(settings.py)と本番/開発共有用(settings_common.py)と開発環境用(settings_dev.py)に分割する
+- settings.pyに以下を記述
+    - from .settings_common import *
+- サーバー起動コマンドが以下に変更
+    - $python manage.py runserver --settings=config.<使うsettings名>
+
+
 [memo]
 *** 順参照と逆参照 ***
 - 
