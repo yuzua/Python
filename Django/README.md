@@ -28,7 +28,7 @@
         - $python manage.py startapp <アプリケーション名>
     - その他
         - $python manage.py runserver
-        - $python manage.py makemigrations
+        - $python manage.py makemigrations <アプリケーション名>
         - $python manage.py migrate
         - $python mamage.py showmigrations <アプリケーション名>
             - マイグレーション状態の確認
@@ -113,10 +113,11 @@
     - validatorsを使う：異なるフォーム間やフォーム/モデル間で同じバリデーションを共有
     - 「clean_<フィールド名>」メソッドを使う：単一フォーム内で単体フィールドバリデーションを行う
     - 「clean」メソッドを使う：単一フォーム内でフィールドをまたがるバリデーションを行う
-***モデル(続きはここから)***
+***モデル***
 - モデルを通してデータベースをPythonのオブジェクトとして扱う(データベースとオブジェクトをマッピングする仕組みをO/Rマッピングという)
 - モデルの定義方法
     - django.db.models.Modelクラスを継承して作成
+    - __str__(self)で、テンプレートの{{}}で表示させる際の表示内容をカスタマイズできる
 - モデルのフィールドクラス一覧
     - CharField
     - TextField
@@ -126,9 +127,34 @@
     - DataField
     - DateTimeField
 - モデルオブジェクトを使ってのデータベース操作
-    - .object.get()：1行取得
-    - .object.all()：全レコード取得するQuerySetオブジェクトの作成
-    - .object.fillter()：条件指定
+    - 変数名 = <DB名>.objects.get()：1行取得
+    - 変数名 = <DB名>.objects.all()：全レコード取得するQuerySetオブジェクトの作成(models.pyの__str__で指定した形で取り出される)
+        - 変数名 = <DB名>.objects.all().values()：モデルに保存してある値を辞書型で取得
+        - 変数名 = <DB名>.objects.all().values_list()：モデルに保存してある値をタプルで取得
+    - 変数名 = <DB名>.objects.fillter()：条件指定
+        - あいまい検索
+            - 項目名__contains=値：値を含む検索
+            - 項目名__startswith=値：値で始まる検索
+            - 項目名__endswith=値：値で終わる検索
+        - 大文字小文字を区別しない
+            - 項目名__iexact=値：普通の検索
+            - 項目名__icontains=値
+            - 項目名__istartswith=値
+            - 項目名__iendswith=値
+        - 数値の比較
+            - 項目名__gt=値：値より大きい
+            - 項目名__gte=値：値以上
+            - 項目名__lt=値：値より小さい
+            - 項目名__lte=値：値以下
+        - AND
+            - 変数名 = <DB名>.objects.fillter(条件1, 条件2)
+            - ※<DB名>.objects \ の後に改行で .fillter(条件n) \ を書いていく方法もある
+        - OR
+            - 変数名 = <DB名>.objects.fillter(Q(条件1) | Q(条件2))
+            - ※先頭で from django.db.models import Q を記述
+        - リストを使って検索
+            - 変数名 = <DB名>.objects.fillter(項目名__in=リスト)
+            - ※検索対象を事前にリストで作成しておく
     - 参照(公式)：https://docs.djangoproject.com/ja/4.0/topics/db/queries/
     - 参照：https://qiita.com/Bashi50/items/9e1d62c4159f065b662b
 
@@ -158,8 +184,57 @@
     - from .settings_common import *
 - サーバー起動コマンドが以下に変更
     - $python manage.py runserver --settings=config.<使うsettings名>
-
+***all-authでの認証機能の作成(後で)***
+***テストについて(後で)***
+- テストの方式
+    - テストクラス(TestCase)を使用
+        - 簡単なアプリケーションで使用
+    - Seleniumを使用(DjangoのLiveServerTestCaseクラスの使用が必須)
+        - JavaScriptで画面を描画しているアプリケーションで使用
+    - ※どちらもPythonの標準テストクラス(TestCase)がベース
+- テストの流れ
+    - テストデータベースの作成,テストクラスの収集
+    - ※テストクラス単位で以下ループ
+        - setUpClass()の実行
+        - ※テストメソッド単位で以下ループ
+            - setUp()の実行
+            - test_xxx()の実行
+            - tearDown()の実行
+            - テスト用データベースのロールバック(テストメソッド単位)
+        - tearDownClass()の実行
+        - テスト用データベースのロールバック(テストクラス単位)
+    - テスト用データベースの削除
+***データベースのバックアップバッチの作成(後で)***
+***セキュリティチェック***
+- ※ログ出力ディレクトリがないとエラーになる
+- $python manage.py check --deploy
+***モデル(データベース操作)***
+- レコードの並べ替え
+    - 変数名 = <DB名>.objects.<allかfillter>().order_by(項目名)：項目名を昇順で並べ替え
+    - 変数名 = <DB名>.objects.<allかfillter>().order_by(項目名).reverse()：項目名を降順で並べ替え
+- 指定した範囲のレコードを取得
+    - 変数名 = <DB名>.objects.<allかfillter>()[開始位置：終了位置]：開始位置から終了位置までの要素を取得
+    - レコード検索
+        - find = request.POST['find']
+        - list = find.split()
+        - data = <DB名>.objects.<allかfillter>(int(list[開始位置])：int(list[終了位置]))
+        - ※入力フォームに数字が入力されていないといけない
+- レコードの集計
+    - 変数名 = <DB名>.objects.aggregate(関数(項目名))
+    - 関数一覧
+        - Count(項目名)
+        - Sum(項目名)
+        - AVG(項目名)
+        - Min(項目名)
+        - Max(項目名)
+    - ※先頭で from django.db.models import Count,~ を記述する
+    - ※集計された値は、変数名['項目名__関数名(小文字)']で取得可能(辞書型で格納されている)
+- SQLを直接実行
+    - 変数名 = <DB名>.objects.row(クエリ文)
 
 [memo]
+***テンプレート(フィルター機能について)***
+- Djangoのテンプレートでは、{{}}で値を出力する時、HTMLのタグが含まれていると自動的にエスケープ処理(テキストとして出力)を行う
+- {{ message|safe }}と記述することで、フィルター機能(HTMLタグを書き出せる)を適用できる
 *** 順参照と逆参照 ***
 - 
