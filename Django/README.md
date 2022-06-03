@@ -238,3 +238,27 @@
 - {{ message|safe }}と記述することで、フィルター機能(HTMLタグを書き出せる)を適用できる
 *** 順参照と逆参照 ***
 - 
+***モデル定義とクエリ操作***
+- ※マイグレーションファイルから生成されたSQLは $python manage.py sqlmigrate <app_label> <migration_name> で確認可能
+- ※Djangoでは複合主キーを生成することができない(対策方法：https://gijutsu.com/2021/01/19/django-composite-primary-key/ か django-compositepk-modelを使用)
+- Djangoのレコードの一括作成,更新方法(後で)
+    - bulk_createとbulk_updateを使用
+        - 参考：django-compositepk-model
+- Metaオプション
+    - 本来データベース名は<アプリケーション名>_<モデル名>が使用されるが、Metaオプションを使用すると、データベース名を自由に設定できる
+- モデルフィールドの定義
+    - モデルフィールドの一覧
+        - 文字列：CharField、TextField、EmailField、JSONField、URLField、SlugField
+        - 数値：IntegerField、FloatField、AutoField、DecimalField、CommaSeparatedIntegerField
+        - 二値：BooleanField、NullBooleanField
+        - 時刻：DateField、DateTimeField、TimeField、DurationField
+        - ファイル：FileField、FilePathField、ImageField
+        - 関係：ForeignKey、OneToOneField、OneToMenyField
+        - PostgreSQL：ArrayField、HStoreField、IntergerRangeField、DataRange、Field....
+        - その他：GenericIPAddressField、UUIDField
+    - ※UUIDFieldなどはMySQLやSQLiteだと、CHAR(32)で扱われるが、PostgreSQLだとUUID型となるなどDBによって変わるものがあるため、意図した型として扱われているか確認するために、$python manage.py sqlmigrateを行う必要がある
+    - 複数の選択肢の中でどれか1つの値を保持するようなフィールドの定義(後で)
+        - choices属性を用いて定義
+    - nullの扱い方
+        - ※入力が任意だからとnullを許容すると、入力されていないレコードを検索する際に、null+空文字の検索を行わないといけなくなるため、nullを許容せず、デフォルトで空文字を入れる方式にしたほうが良い
+        - nullオプションをFalse、defaultオプションを''、blankオプションをTrueに設定する
