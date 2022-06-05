@@ -263,7 +263,8 @@
         - nullの扱い方
             - ※入力が任意だからとnullを許容すると、入力されていないレコードを検索する際に、null+空文字の検索を行わないといけなくなるため、nullを許容せず、デフォルトで空文字を入れる方式にしたほうが良い
             - nullオプションをFalse、defaultオプションを''、blankオプションをTrueに設定する
-- Django ORMによるクエリ操作
+- Django ORMによるクエリ操作(後で)
     - モデルAPIを使用した、作成,更新,削除(後で)
         - $python manage.py shell_plusコマンドを使用
+    - select_relatedによるテーブル結合(後で)
     
