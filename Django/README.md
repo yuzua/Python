@@ -155,6 +155,7 @@
         - リストを使って検索
             - 変数名 = <DB名>.objects.fillter(項目名__in=リスト)
             - ※検索対象を事前にリストで作成しておく
+        - ※取得件数指定 変数名 = <DB名>.objects.all()[:1] 全件取得してから絞っているのではなく、SQLの段階で件数を絞っている
     - 参照(公式)：https://docs.djangoproject.com/ja/4.0/topics/db/queries/
     - 参照：https://qiita.com/Bashi50/items/9e1d62c4159f065b662b
 
@@ -267,4 +268,7 @@
     - モデルAPIを使用した、作成,更新,削除(後で)
         - $python manage.py shell_plusコマンドを使用
     - select_relatedによるテーブル結合(後で)
+    - モデルマネージャーやQuerySetのカスタマイズ(後で)(わからん???)
+    - 明示的なトランザクション(後で)
+        - transaction.atomicを使用
     
